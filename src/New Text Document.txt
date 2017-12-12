@@ -1,0 +1,276 @@
+package Units;
+
+
+import GUI.Log;
+import GUI.Map;
+import Units.Laboratory;
+import Units.Resources;
+import Units.Timer;
+import Units.House;
+
+
+
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+public class Builder extends Unit implements iMove, iDie,Serializable {
+    
+    
+    private ArrayList<Builder> builder;
+    public JButton btn1=new JButton("Show Building"); 
+    public JButton btn2=new JButton("Hide Building");
+    public JLabel builder1=new JLabel();
+   public JButton build1=new JButton("Build Barracks"); 
+    public JButton build2=new JButton("Build Mine"); 
+    public JButton build3=new JButton("Build Townhall "); 
+    public JButton build4=new JButton("Build Laboratory"); 
+    public JButton build5=new JButton("Build House"); 
+    public JButton build6=new JButton("Build Tankfactory"); 
+     public JLabel health=new JLabel();
+     public JLabel speed=new JLabel();
+     House house=new House();
+     Resources resources=new Resources();
+     Timer timer=new Timer();
+public JLabel money=new JLabel();
+
+    public Builder() {
+    this.setHealth(100);
+    this.setSpeed(100);
+    
+        
+    }
+public void setInfo( Map map){
+    
+    
+            builder1.setIcon(new ImageIcon(new ImageIcon("E:\\oopproject\\Colosseus.png").getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT)));
+
+     map.box2.add(btn1);
+     map.box2.add(btn2);
+     btn1.setBackground(Color.GREEN);
+     btn2.setBackground(Color.GREEN);
+     btn1.setVisible(false);
+       btn2.setVisible(false);
+     builder1.addMouseListener(new mouse());
+     map.middle.add(build1);
+          map.middle.add(build2);
+                    map.middle.add(build3);
+          map.middle.add(build4);
+          map.middle.add(build5);
+          map.middle.add(build6);
+          build1.setVisible(false);
+          build2.setVisible(false);
+          build3.setVisible(false);
+          build4.setVisible(false);
+          build5.setVisible(false);
+          build6.setVisible(false);
+          btn1.addActionListener(new action());
+btn2.addActionListener(new action1());
+
+health.setText("Health="+""+getHealth());
+speed.setText("Speed="+""+getSpeed());
+map.box1.add(health);
+map.box1.add(speed);
+
+     health.setVisible(false);
+          speed.setVisible(false);
+   
+  
+    
+    }
+     
+     
+ 
+ 
+    @Override
+    public void Move() {
+        System.out.println("x is moving"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+  
+
+    @Override
+    public void Add() {
+        Builder x=new Builder();
+        builder.add(x);
+    }
+
+    @Override
+    public void underAttack() {
+        super.underAttack(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
+    
+      @Override
+    public void Die() {
+        
+    }
+    
+   public void Build(TownHall x,Resources y,Timer z) throws InterruptedException{
+        if(y.GoldAvailable(x.getPrice())){
+                z.wait(x.getCreateTime());
+                x.Add();
+                 y.decStock(x.getPrice());}
+        else 
+            System.out.println("Not Enough Gold!");
+   }
+    public void Build(House house,Resources resources,Timer timer){
+      
+         //if(resources.GoldAvailable(house.getPrice()))
+         //{
+            //timer.wait(house.getCreateTime());
+               //house.Add();
+              
+                resources.decStock(house.getPrice());
+        // }
+        //else 
+            //System.out.println("Not Enough Gold!");
+              
+        
+    }
+    public void Build(Mine x,Resources y,Timer z) throws InterruptedException{
+         if(y.GoldAvailable(x.getPrice())){
+                z.wait(x.getCreateTime());
+                x.Add();
+                 y.decStock(x.getPrice());}
+        else 
+            System.out.println("Not Enough Gold!");
+    }
+    public void Build(Barracks x,Resources y,Timer z) throws InterruptedException{
+        if(y.GoldAvailable(x.getPrice())){
+                z.wait(x.getCreateTime());
+                x.Add();
+                 y.decStock(x.getPrice());}
+        else 
+            System.out.println("Not Enough Gold!");
+    }
+    public void Build(TankFactory x,Resources y,Timer z) throws InterruptedException{
+        if(y.GoldAvailable(x.getPrice())){
+                z.wait(x.getCreateTime());
+                x.Add();
+                 y.decStock(x.getPrice());}
+        else 
+            System.out.println("Not Enough Gold!");
+    }
+     public void Build(Laboratory x,Resources y,Timer z) throws InterruptedException{
+        z.wait(x.getCreateTime());
+        x.Add();
+        y.decStock(x.getPrice());
+     }
+      public void save() throws FileNotFoundException, IOException
+    {
+        ObjectOutputStream s=new ObjectOutputStream(new FileOutputStream("E:\\shehab\\ks.bin"));
+        
+        s.writeObject(builder);
+        s.close();
+        
+        
+        
+    }
+    public void load() throws IOException, ClassNotFoundException
+    {
+       builder=null;
+        ObjectInputStream w=new ObjectInputStream(new FileInputStream("E:\\shehab\\ks.bin"));
+          
+          builder=(ArrayList<Builder>)w.readObject();
+       
+        
+    }
+
+    
+
+    @Override
+    public void Remove() {
+        builder.remove(builder.size()-1);
+    }
+    
+    
+    
+    
+    private class mouse extends MouseAdapter {
+
+        public void mouseClicked(MouseEvent a) {
+            int x=0;
+            
+           if(a.getClickCount()%2==0)
+           {
+               
+            btn1.setVisible(true);
+           btn2.setVisible(true);
+            health.setVisible(true);
+          speed.setVisible(true);
+           
+           }
+           else
+           {
+               btn1.setVisible(false);
+                              btn2.setVisible(false);
+
+               health.setVisible(false);
+          speed.setVisible(false);
+           }
+              
+              }
+        }
+    private class action implements ActionListener      
+{   
+  public void actionPerformed(ActionEvent ae) 
+    {
+       
+       Object n=ae.getSource();
+       
+        build1.setVisible(true);
+          build2.setVisible(true);
+          build3.setVisible(true);
+          build4.setVisible(true);
+          build5.setVisible(true);
+          build6.setVisible(true);
+      
+          Build(house,resources,timer);
+      
+        
+          
+        
+    }
+}
+    
+    
+    
+    private class action1 implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent ae) {
+            
+                build1.setVisible(false);
+          build2.setVisible(false);
+          build3.setVisible(false);
+          build4.setVisible(false);
+          build5.setVisible(false);
+          build6.setVisible(false);
+              
+        }
+        
+        
+    }
+}
+
+
+   
